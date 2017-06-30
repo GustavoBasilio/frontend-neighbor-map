@@ -40,7 +40,7 @@ module.exports = function(grunt) {
                 'src/assets/sass/**/*'
                 ],
 
-                tasks : [ 'uglify', 'sass' ]
+                tasks : [ 'minifyHtml','uglify','sass' ]
             }
         } // watch
     });

@@ -4,11 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node_modules/.bin/npm-run-all --parallel build server",
+    "build": "grunt & grunt w",
+    "server": "node Server.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "express": "^4.15.3",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-sass": "^1.0.0",
@@ -16,6 +19,8 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-minify-html": "^3.0.0",
     "knockout": "^3.4.2",
-    "load-grunt-tasks": "^3.5.2"
+    "load-grunt-tasks": "^3.5.2",
+    "npm-run-all": "^4.0.2",
+    "open": "0.0.5"
   }
 }

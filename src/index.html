@@ -8,10 +8,22 @@
     </head>
     <body>
         <nav>     
-              
-        </nav>
-        <header>
+              <h1>Near Places</h1>
+              <div id="menu-search">
+                    <form action="/" method="get" id="form-search">
+                        <input type="text"  placeholder="Station Location" name="location" id="input-search">
+                    </form>
+              </div>
+              <ul id="search-results">
 
-        </header>
+              </ul>
+        </nav>
+        <div id="map-container">
+            <header id="header">
+                <i class="fa fa-bars menu-open" aria-hidden="true"></i>
+            </header>
+            <div id="map">                
+            </div>
+        </div>
     </body>
 </html>

@@ -4,25 +4,28 @@
         <title>Neighbor Map</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css/style.css" rel="stylesheet">
+        <link href="style.css" rel="stylesheet">
     </head>
     <body>
-        <nav>     
-              <h1>Near Places</h1>
-              <div id="menu-search">
-                    <form action="/" method="get" id="form-search">
-                        <input type="text"  placeholder="Station Location" name="location" id="input-search">
-                    </form>
-              </div>
-              <ul id="search-results">
+        <div id="app-container">
+            <aside id="menu-container">
+                <i className="fa fa-times close-menu" aria-hidden="true"></i>
+                <h1>Near Places</h1>
+                <div id="menu-search">
+                        <form action="/" method="get" id="form-search">
+                            <input type="text"  placeholder="Station Location" name="location" id="input-search">
+                        </form>
+                </div>
+                <ul id="search-results">
 
-              </ul>
-        </nav>
-        <div id="map-container">
-            <header id="header">
-                <i class="fa fa-bars menu-open" aria-hidden="true"></i>
-            </header>
-            <div id="map">                
+                </ul>
+            </aside>
+            <div id="map-container">
+                <header id="header">
+                    <i class="fa fa-bars menu-open" aria-hidden="true"></i>
+                </header>
+                <div id="map">                
+                </div>
             </div>
         </div>
         <script async defer src="https://use.fontawesome.com/51324ecb0c.js"></script>

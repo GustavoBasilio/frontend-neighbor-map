@@ -1,0 +1,40 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+}
+body {
+    overflow: hidden;
+    width: 100vw;
+    #app-container {
+        width: #{strip-units($menu_width)+100}vw;
+        height: 100vh;
+        display: inline-flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        transform: translateX(-$menu_width);
+        -webkit-transform: translateX(-$menu_width);
+        -moz-transform: translateX(-$menu_width);
+        will-change: transform;
+        transition: transform 0.2s ease-out;
+        -webkit-transition: transform 0.2s ease-out;
+        -moz-transition: transform 0.2s ease-out;
+        @media screen and (max-width: $break_large) {
+            width: #{strip-units($menu_width_large)+100}vw;
+            transform: translateX(-$menu_width_large);
+            -webkit-transform: translateX(-$menu_width_large);
+            -moz-transform: translateX(-$menu_width_large);
+        }
+        @media screen and (max-width: $break_medium) {
+            width: #{strip-units($menu_width_mobile)+100}vw;
+            transform: translateX(-$menu_width_mobile);
+            -webkit-transform: translateX(-$menu_width_mobile);
+            -moz-transform: translateX(-$menu_width_mobile);
+        }
+        &.menu-open {
+            transform: translateX(0);
+            -webkit-transform: translateX(0);
+            -moz-transform: translateX(0);
+        }
+    }
+}

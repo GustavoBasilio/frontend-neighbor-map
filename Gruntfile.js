@@ -37,7 +37,8 @@ module.exports = function(grunt) {
             dist : {
                 files : [
                 'src/assets/js/**/*',
-                'src/assets/sass/**/*'
+                'src/assets/sass/**/*',
+                'src/*.html'
                 ],
 
                 tasks : [ 'minifyHtml','uglify','sass' ]

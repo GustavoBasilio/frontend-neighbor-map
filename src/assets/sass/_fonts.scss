@@ -1,0 +1,16 @@
+@mixin font-face($name,$weight,$style,$path){
+  @font-face {
+    font-family: $name;
+    font-weight: $weight;
+    font-style: $style;
+    src:url($path);
+  }
+}
+
+@include font-face ('Open Sans',normal,normal,'../fonts/Open_Sans/OpenSans-Regular.ttf');
+@include font-face ('Open Sans',bold,normal,'../fonts/Open_Sans/OpenSans-Bold.ttf');
+@include font-face ('Open Sans',bold,italic,'../fonts/Open_Sans/OpenSans-BoldItalic.ttf');
+@include font-face ('Open Sans',bolder,normal,'../fonts/Open_Sans/OpenSans-ExtraBold.ttf');
+@include font-face ('Open Sans',bolder,italic,'../fonts/Open_Sans/OpenSans-ExtraBoldItalic.ttf');
+@include font-face ('Open Sans',lighter,normal,'../fonts/Open_Sans/OpenSans-Light.ttf');
+@include font-face ('Open Sans',lighter,italic,'../fonts/Open_Sans/OpenSans-LightItalic.ttf');

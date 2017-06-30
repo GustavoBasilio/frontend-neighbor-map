@@ -11,7 +11,10 @@
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
-    "grunt-sass": "^2.0.0",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-uglify": "^3.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-minify-html": "^3.0.0",
     "knockout": "^3.4.2",
     "load-grunt-tasks": "^3.5.2"
   }

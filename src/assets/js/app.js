@@ -1,0 +1,150 @@
+var map,
+    places,
+    infoWindow;
+
+function Location(lat, lng) {
+    this.position = {lat: lat, lng: lng}
+}
+
+function createInfobox(title,subtitle) {
+    var dom = document.createElement('div'),
+        titleDom = document.createElement('h2'),
+        subtitleDom = document.createElement('h3');
+    titleDom.innerHTML = title;
+    subtitleDom.innerHTML = subtitle;
+    dom.classList = "info-window";
+    dom.appendChild(titleDom);
+    dom.appendChild(subtitleDom);
+    return dom.outerHTML;
+}
+
+function MapViewModel() {
+    var self = this;
+    //View variables
+    self.markers = new Array();
+    self.resultsList = ko.observableArray(self.markers);
+
+    //Get user location
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            self.center = position;
+        });
+        if(!self.center)
+            self.center = new Location(-23.5489, -46.6388);
+    } else
+        self.center = new Location(-23.5489, -46.6388);
+
+    //Map options
+    var myStyle = [
+        {
+            elementType: 'geometry', stylers: [{color: '#cccccc'}]
+        },
+        {
+              featureType: 'road',
+              elementType: 'geometry',
+              stylers: [{color: '#555555'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'geometry.stroke',
+              stylers: [{color: '#555555'}]
+            },
+        {
+            featureType: "administrative",
+            elementType: "labels",
+            stylers: [
+            { visibility: "off" }
+            ]
+        },{
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [
+            { visibility: "off" }
+            ]
+        },{
+            featureType: "water",
+            elementType: "labels",
+            stylers: [
+            { visibility: "off" }
+            ]
+        }
+     ];
+    var mapOptions = {
+        zoom: 16,
+        center: self.center.position
+    }
+
+   
+   //Initiate the map object
+    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    map.set('styles', myStyle);
+    places = new google.maps.places.PlacesService(map);
+    infoWindow = new google.maps.InfoWindow({
+		maxWidth: 240
+	});
+    self.searchBox =  new google.maps.places.SearchBox(document.getElementById('input-search'));
+    //Create the user position marker 
+    self.marker = new google.maps.Marker({
+            position: self.center.position,
+            map: map,
+            animation: google.maps.Animation.DROP,
+            icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        });
+
+    //Toggle the menu
+    self.menuToggle = function() {
+        $("#app-container").toggleClass("menu-open");
+    }
+
+    //Get nearby locations
+    self.getLocations = function(position) {
+        places.nearbySearch({
+            location: position.position,
+            radius: 500
+        },function(response,status) {
+            self.markers = new Array();
+            response.map(function(place) {
+                self.markers.push({
+                    marker: new google.maps.Marker({
+                        position: new Location(place.geometry.location.lat(),place.geometry.location.lng()).position,
+                        map: map,
+                        title: place.name,
+                        animation: google.maps.Animation.DROP,
+                        icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+                    }),
+                    name: place.name,
+                    address: place.vicinity
+                });
+            });
+            self.markers.forEach(function(marker){
+                marker.marker.addListener('click', function() {
+                    self.onpenInfoWIndow(marker);
+                });
+            });
+            self.resultsList(self.markers);
+        });
+    }
+    self.getLocations(self.center);
+    self.searchBox.addListener('places_changed', function() {
+        var place = self.searchBox.getPlaces();
+        if (places.length == 0) {
+            return;
+        }
+        self.center = new Location(place[0].geometry.location.lat(),place[0].geometry.location.lng());
+        self.marker.setPosition(self.center.position);
+        self.markers.forEach(function(marker) {
+            marker.marker.setMap(null);
+        });
+        self.markers = new Array();
+        map.panTo(self.center.position);
+        self.getLocations(self.center);
+    });
+    self.onpenInfoWIndow = function(marker) {
+        infoWindow.setContent(createInfobox(marker.name, marker.address));
+        infoWindow.open(map, marker.marker);
+    }
+}
+
+function initMap() {
+    ko.applyBindings(new MapViewModel());   
+}

@@ -12,22 +12,29 @@
                 <i className="fa fa-times close-menu" aria-hidden="true"></i>
                 <h1>Near Places</h1>
                 <div id="menu-search">
-                        <form action="/" method="get" id="form-search">
-                            <input type="text"  placeholder="Station Location" name="location" id="input-search">
-                        </form>
+                    <form action="/" method="get" id="form-search">
+                        <input type="text"  placeholder="Station Location" name="location" id="input-search">
+                    </form>
+                    <ul id="search-results" data-bind="foreach: resultsList">
+                        <li data-bind="click: $root.onpenInfoWIndow">
+                            <h2 data-bind="text: name"></h2>
+                            <h3 data-bind="text: address"></h3>
+                        </li>
+                    </ul>
                 </div>
-                <ul id="search-results">
-
-                </ul>
             </aside>
             <div id="map-container">
                 <header id="header">
-                    <i class="fa fa-bars menu-open" aria-hidden="true"></i>
+                    <i class="fa fa-bars menu-open" aria-hidden="true" data-bind="click: menuToggle"></i>
                 </header>
                 <div id="map">                
                 </div>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+        <script src="/bundle.min.js"></script>
         <script async defer src="https://use.fontawesome.com/51324ecb0c.js"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUwapqBC38wcxk-UmmCVMZe6KDG_d2PJA&callback=initMap&libraries=places"></script>
     </body>
 </html>

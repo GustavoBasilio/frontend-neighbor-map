@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 
             my_target : {
                 files : {
-                'dist/app.js' : [ 'src/assets/js/app.js' ]
+                'dist/bundle.min.js' : [ 'src/assets/js/app.js' ]
                 }
             }
         },
@@ -31,6 +31,13 @@ module.exports = function(grunt) {
                 files: {
                     'dist/style.css' : 'src/assets/sass/app.scss'
                 }
+            }
+        },
+        copy: {
+            main: {
+                files: [
+                    {expand: true, src: ['src/assets/fonts/*'], dest: 'dist/'}
+                ]
             }
         },
         watch : {
@@ -49,6 +56,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks( 'grunt-contrib-uglify' );
     grunt.loadNpmTasks( 'grunt-minify-html' );
+    grunt.loadNpmTasks( 'grunt-contrib-copy' );
     grunt.loadNpmTasks( 'grunt-contrib-watch' );
 
     grunt.registerTask('default', ['minifyHtml','uglify','sass']);

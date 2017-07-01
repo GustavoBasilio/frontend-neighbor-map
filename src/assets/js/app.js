@@ -5,7 +5,7 @@ var map,
 
 //Location Class
 function Location(lat, lng) {
-    this.position = {lat: lat, lng: lng}
+    this.position = {lat: lat, lng: lng};
 }
 
 //Create the html for the infobox
@@ -24,7 +24,7 @@ function createInfobox(title,subtitle) {
 function MapViewModel() {
     var self = this;
     //View variables
-    self.markers = new Array();
+    self.markers = [];
     self.resultsList = ko.observableArray(self.markers);
     self.query = ko.observable();
     //Filter the comments
@@ -91,7 +91,7 @@ function MapViewModel() {
     var mapOptions = {
         zoom: 16,
         center: self.center.position
-    }
+    };
 
    
    //Initiate the map object
@@ -112,7 +112,7 @@ function MapViewModel() {
     //Toggle the menu
     self.menuToggle = function() {
         $("#app-container").toggleClass("menu-open");
-    }
+    };
 
     //Get nearby locations
     self.getLocations = function(position) {
@@ -120,7 +120,7 @@ function MapViewModel() {
             location: position.position,
             radius: 500
         },function(response,status) {
-            self.markers = new Array();
+            self.markers = [];
             response.map(function(place) {
                 self.markers.push({
                     marker: new google.maps.Marker({
@@ -141,13 +141,13 @@ function MapViewModel() {
             });
             self.resultsList(self.markers);
         });
-    }
+    };
     self.getLocations(self.center);
     //Open infowindow
     self.onpenInfoWIndow = function(marker) {
         infoWindow.setContent(createInfobox(marker.name, marker.address));
         infoWindow.open(map, marker.marker);
-    }
+    };
 }
 
 //Google maps callback

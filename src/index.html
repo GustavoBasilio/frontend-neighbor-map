@@ -13,9 +13,9 @@
                 <h1>Near Places</h1>
                 <div id="menu-search">
                     <form action="/" method="get" id="form-search">
-                        <input type="text"  placeholder="Station Location" name="location" id="input-search">
+                        <input type="text"  placeholder="Station Location" name="location" id="input-search" data-bind="value: query,valueUpdate: 'keyup'">
                     </form>
-                    <ul id="search-results" data-bind="foreach: resultsList">
+                    <ul id="search-results" data-bind="foreach: resultsListFilter">
                         <li data-bind="click: $root.onpenInfoWIndow">
                             <h2 data-bind="text: name"></h2>
                             <h3 data-bind="text: address"></h3>

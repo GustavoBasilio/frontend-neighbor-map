@@ -1,11 +1,14 @@
+//Global variables
 var map,
     places,
     infoWindow;
 
+//Location Class
 function Location(lat, lng) {
     this.position = {lat: lat, lng: lng}
 }
 
+//Create the html for the infobox
 function createInfobox(title,subtitle) {
     var dom = document.createElement('div'),
         titleDom = document.createElement('h2'),
@@ -23,6 +26,22 @@ function MapViewModel() {
     //View variables
     self.markers = new Array();
     self.resultsList = ko.observableArray(self.markers);
+    self.query = ko.observable();
+    //Filter the comments
+    self.resultsListFilter = ko.computed(function () {
+        var filter = self.query(),
+            arr = [];
+        if (filter) {
+            ko.utils.arrayForEach(self.resultsList(), function (item) {
+                if (item.name.toLowerCase().indexOf(filter) >= 0) {
+                    arr.push(item);
+                }
+            });
+        } else {
+            arr = self.resultsList();
+        }
+        return arr;
+    });
 
     //Get user location
     if(navigator.geolocation) {
@@ -82,7 +101,6 @@ function MapViewModel() {
     infoWindow = new google.maps.InfoWindow({
 		maxWidth: 240
 	});
-    self.searchBox =  new google.maps.places.SearchBox(document.getElementById('input-search'));
     //Create the user position marker 
     self.marker = new google.maps.Marker({
             position: self.center.position,
@@ -125,26 +143,14 @@ function MapViewModel() {
         });
     }
     self.getLocations(self.center);
-    self.searchBox.addListener('places_changed', function() {
-        var place = self.searchBox.getPlaces();
-        if (places.length == 0) {
-            return;
-        }
-        self.center = new Location(place[0].geometry.location.lat(),place[0].geometry.location.lng());
-        self.marker.setPosition(self.center.position);
-        self.markers.forEach(function(marker) {
-            marker.marker.setMap(null);
-        });
-        self.markers = new Array();
-        map.panTo(self.center.position);
-        self.getLocations(self.center);
-    });
+    //Open infowindow
     self.onpenInfoWIndow = function(marker) {
         infoWindow.setContent(createInfobox(marker.name, marker.address));
         infoWindow.open(map, marker.marker);
     }
 }
 
+//Google maps callback
 function initMap() {
     ko.applyBindings(new MapViewModel());   
 }

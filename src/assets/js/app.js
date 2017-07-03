@@ -27,6 +27,10 @@ function MapViewModel() {
     self.markers = [];
     self.resultsList = ko.observableArray(self.markers);
     self.query = ko.observable();
+    self.menuStatus = false;
+    self.menuCompute = ko.computed(function() {
+        return self.menuStatus ? "menu-open" : "";
+    })
     //Filter the comments
     self.resultsListFilter = ko.computed(function () {
         var filter = self.query(),
@@ -111,7 +115,8 @@ function MapViewModel() {
 
     //Toggle the menu
     self.menuToggle = function() {
-        $("#app-container").toggleClass("menu-open");
+        console.log(self.menuStatus);
+        self.menuStatus = !self.menuStatus;
     };
 
     //Get nearby locations
@@ -152,5 +157,10 @@ function MapViewModel() {
 
 //Google maps callback
 function initMap() {
+    if ( typeof google != 'object' || typeof google.maps != 'object') {
+		$('#error-message').html('<h2>ERROR: could not load Google Maps API.</h2><h5>Do you have an Internet connection?</h5>');
+        $('#error-message').fadeIn();
+		$('#map-container').hide();
+	}
     ko.applyBindings(new MapViewModel());   
 }

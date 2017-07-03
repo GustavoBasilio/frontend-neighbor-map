@@ -7,9 +7,9 @@
         <link href="style.css" rel="stylesheet">
     </head>
     <body>
-        <div id="app-container">
+        <div id="app-container" data-bind="css: menuCompute">
             <aside id="menu-container">
-                <i className="fa fa-times close-menu" aria-hidden="true"></i>
+                <i class="fa fa-times close-menu" aria-hidden="true" data-bind="click: menuToggle"></i>
                 <h1>Near Places</h1>
                 <div id="menu-search">
                     <form action="/" method="get" id="form-search">
@@ -23,6 +23,7 @@
                     </ul>
                 </div>
             </aside>
+            <div id="error-message"></div>
             <div id="map-container">
                 <header id="header">
                     <i class="fa fa-bars menu-open" aria-hidden="true" data-bind="click: menuToggle"></i>

@@ -173,3 +173,9 @@ function initMap() {
 	}
     ko.applyBindings(new MapViewModel());   
 }
+
+function asyncLoadError(package) {
+		$('#error-message').html('<h2>ERROR: could not load '+package+'.</h2>');
+        $('#error-message').show();
+		$('#map').hide();
+}

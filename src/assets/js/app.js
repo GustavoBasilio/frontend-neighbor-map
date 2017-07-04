@@ -38,7 +38,12 @@ function MapViewModel() {
         if (filter) {
             ko.utils.arrayForEach(self.resultsList(), function (item) {
                 if (item.name.toLowerCase().indexOf(filter) >= 0) {
+                    item.marker.setVisible(true);
+                    item.marker.setAnimation(google.maps.Animation.BOUNCE);
+                    setTimeout(function(){ item.marker.setAnimation(null); }, 750);
                     arr.push(item);
+                } else {
+                    item.marker.setVisible(false);
                 }
             });
         } else {
@@ -105,6 +110,7 @@ function MapViewModel() {
     infoWindow = new google.maps.InfoWindow({
 		maxWidth: 240
 	});
+
     //Create the user position marker 
     self.marker = new google.maps.Marker({
             position: self.center.position,
@@ -136,7 +142,8 @@ function MapViewModel() {
                         icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
                     }),
                     name: place.name,
-                    address: place.vicinity
+                    address: place.vicinity,
+                    status: 1
                 });
             });
             self.markers.forEach(function(marker){
@@ -150,6 +157,8 @@ function MapViewModel() {
     self.getLocations(self.center);
     //Open infowindow
     self.onpenInfoWIndow = function(marker) {
+        marker.marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function(){ marker.marker.setAnimation(null); }, 750);
         infoWindow.setContent(createInfobox(marker.name, marker.address));
         infoWindow.open(map, marker.marker);
     };

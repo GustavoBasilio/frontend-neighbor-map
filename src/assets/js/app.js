@@ -27,9 +27,9 @@ function MapViewModel() {
     self.markers = [];
     self.resultsList = ko.observableArray(self.markers);
     self.query = ko.observable();
-    self.menuStatus = false;
+    self.menuStatus = ko.observable(false);
     self.menuCompute = ko.computed(function() {
-        return self.menuStatus ? "menu-open" : "";
+        return self.menuStatus() ? "menu-open" : "";
     })
     //Filter the comments
     self.resultsListFilter = ko.computed(function () {
@@ -115,8 +115,8 @@ function MapViewModel() {
 
     //Toggle the menu
     self.menuToggle = function() {
-        console.log(self.menuStatus);
-        self.menuStatus = !self.menuStatus;
+        var status = self.menuStatus();
+        self.menuStatus(!status);
     };
 
     //Get nearby locations

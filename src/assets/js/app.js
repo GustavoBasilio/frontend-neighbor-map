@@ -10,11 +10,11 @@ function Location(lat, lng) {
 
 //Create the html for the infobox
 function createInfobox(title,subtitle,image) {
-    var dom = document.getElementById("infoWindow").innerHTML;
-    dom = dom.replace("%title%",title);
-    dom = dom.replace("%subtitle%",subtitle);
-    dom = dom.replace("%image%",image);
-
+    var dom = '<div class="info-window">'+
+                '<h2>'+title+'</h2>'+
+                '<h3>'+subtitle+'</h3>';
+        dom +=  image ? '<img src="'+image+'">' : "No image available";
+        dom +=   image ? '<span><i>powered by</i> <b>Foursquare</b></span></div>': "";
     return dom;
 }
 
@@ -23,7 +23,7 @@ function MapViewModel() {
     //View variables
     self.markers = [];
     self.resultsList = ko.observableArray(self.markers);
-    self.query = ko.observable();
+    self.query = ko.observable("");
     self.menuStatus = ko.observable(false);
     self.menuCompute = ko.computed(function() {
         return self.menuStatus() ? "menu-open" : "";
@@ -32,7 +32,7 @@ function MapViewModel() {
     self.resultsListFilter = ko.computed(function () {
         var filter = self.query(),
             arr = [];
-        if (filter) {
+        if (filter != "") {
             ko.utils.arrayForEach(self.resultsList(), function (item) {
                 if (item.name.toLowerCase().indexOf(filter) >= 0) {
                     item.marker.setVisible(true);
@@ -42,6 +42,9 @@ function MapViewModel() {
                 }
             });
         } else {
+            ko.utils.arrayForEach(self.resultsList(), function (item) {
+                item.marker.setVisible(true);
+            });
             arr = self.resultsList();
         }
         return arr;
@@ -184,8 +187,12 @@ function MapViewModel() {
                 "m":'foursquare'
             }
         }).done(function(photos) {
-            var photo = photos.response.photos.items[0];
-            var image = photo.prefix+'200x80'+photo.suffix;
+            if(photos.response.photos.items.length > 0){
+                var photo = photos.response.photos.items[0];
+                var image = photo.prefix+'200x80'+photo.suffix;
+            }else {
+                var image = 0;
+            }
             marker.marker.setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(function(){ marker.marker.setAnimation(null); }, 750);
             infoWindow.setContent(createInfobox(marker.name, marker.address, image));

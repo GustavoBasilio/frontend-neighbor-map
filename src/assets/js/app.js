@@ -32,7 +32,7 @@ function MapViewModel() {
     self.resultsListFilter = ko.computed(function () {
         var filter = self.query(),
             arr = [];
-        if (filter != "") {
+        if (filter !== "") {
             ko.utils.arrayForEach(self.resultsList(), function (item) {
                 if (item.name.toLowerCase().indexOf(filter) >= 0) {
                     item.marker.setVisible(true);
@@ -189,11 +189,12 @@ function MapViewModel() {
                 "m":'foursquare'
             }
         }).done(function(photos) {
+            var image;
             if(photos.response.photos.items.length > 0){
                 var photo = photos.response.photos.items[0];
-                var image = photo.prefix+'200x80'+photo.suffix;
+                image = photo.prefix+'200x80'+photo.suffix;
             }else {
-                var image = 0;
+                image = 0;
             }
             marker.marker.setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(function(){ marker.marker.setAnimation(null); }, 750);

@@ -10,18 +10,12 @@ function Location(lat, lng) {
 
 //Create the html for the infobox
 function createInfobox(title,subtitle,image) {
-    var dom = document.createElement('div'),
-        titleDom = document.createElement('h2'),
-        subtitleDom = document.createElement('h3'),
-        imageDom = document.createElement('img');
-    imageDom.src = image;
-    titleDom.innerHTML = title;
-    subtitleDom.innerHTML = subtitle;
-    dom.classList = "info-window";
-    dom.appendChild(titleDom);
-    dom.appendChild(subtitleDom);
-    dom.appendChild(imageDom);
-    return dom.outerHTML;
+    var dom = document.getElementById("infoWindow").innerHTML;
+    dom = dom.replace("%title%",title);
+    dom = dom.replace("%subtitle%",subtitle);
+    dom = dom.replace("%image%",image);
+
+    return dom;
 }
 
 function MapViewModel() {

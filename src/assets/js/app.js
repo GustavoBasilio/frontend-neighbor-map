@@ -27,7 +27,7 @@ function MapViewModel() {
     self.menuStatus = ko.observable(false);
     self.menuCompute = ko.computed(function() {
         return self.menuStatus() ? "menu-open" : "";
-    })
+    });
     //Filter the comments
     self.resultsListFilter = ko.computed(function () {
         var filter = self.query(),

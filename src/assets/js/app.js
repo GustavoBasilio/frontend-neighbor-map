@@ -167,6 +167,8 @@ function MapViewModel() {
                         });
                         self.resultsList(self.markers);
                     }
+                }).fail(function(){
+                    console.log("Error in getting venue ID in Foursquare API");
                 });
             });
         });
@@ -197,6 +199,8 @@ function MapViewModel() {
             setTimeout(function(){ marker.marker.setAnimation(null); }, 750);
             infoWindow.setContent(createInfobox(marker.name, marker.address, image));
             infoWindow.open(map, marker.marker);
+        }).fail(function(){
+            console.log("Error in getting photos in Foursquare API");
         });
     };
 }

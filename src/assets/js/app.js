@@ -42,8 +42,6 @@ function MapViewModel() {
             ko.utils.arrayForEach(self.resultsList(), function (item) {
                 if (item.name.toLowerCase().indexOf(filter) >= 0) {
                     item.marker.setVisible(true);
-                    item.marker.setAnimation(google.maps.Animation.BOUNCE);
-                    setTimeout(function(){ item.marker.setAnimation(null); }, 750);
                     arr.push(item);
                 } else {
                     item.marker.setVisible(false);
@@ -137,65 +135,67 @@ function MapViewModel() {
             self.markers = [];
             response.map(function(place) {
                 var position = place.geometry.location.lat()+','+place.geometry.location.lng();
-                self.markers.push({
-                    marker: new google.maps.Marker({
-                        position: new Location(place.geometry.location.lat(),place.geometry.location.lng()).position,
-                        map: map,
-                        title: place.name,
-                        animation: google.maps.Animation.DROP,
-                        icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-                    }),
-                    position: position,
-                    name: place.name,
-                    address: place.vicinity,
-                    status: 1
+
+                $.ajax({
+                    url: "https://api.foursquare.com/v2/venues/search",
+                    method: "get",
+                    dataType: "jsonp",
+                    data: {
+                        "client_id": "1JXUG0BCBAIWUM0WDDAVQT3CY0PVH4FSXRC0LJL5OVKOIZZ2",
+                        "client_secret": "5B4NN4OWKVET0Y0EJWEWKLWRPZISLSQKJZXXHCYOKQNTP442",
+                        "limit": 1,
+                        "query": place.name,
+                        "ll": position,
+                        "v": '20170704',
+                        "m":'foursquare'
+                    }
+                }).done(function(data) {
+                    if(data.response.venues.length > 0) {
+                        self.markers.push({
+                            marker: new google.maps.Marker({
+                                position: new Location(place.geometry.location.lat(),place.geometry.location.lng()).position,
+                                map: map,
+                                title: place.name,
+                                animation: google.maps.Animation.DROP,
+                                icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+                            }),
+                            position: position,
+                            name: place.name,
+                            address: place.vicinity,
+                            fourId: data.response.venues[0].id
+                        });
+                        var marker = $(self.markers).last()[0];
+                        marker.marker.addListener('click', function() {
+                            self.onpenInfoWIndow(marker);
+                        });
+                        self.resultsList(self.markers);
+                    }
                 });
             });
-            self.markers.forEach(function(marker){
-                marker.marker.addListener('click', function() {
-                    self.onpenInfoWIndow(marker);
-                });
-            });
-            self.resultsList(self.markers);
         });
     };
     self.getLocations(self.center);
     //Open infowindow
     self.onpenInfoWIndow = function(marker) {
         $.ajax({
-            url: "https://api.foursquare.com/v2/venues/search",
+            url: "https://api.foursquare.com/v2/venues/"+ marker.fourId+"/photos",
             method: "get",
             dataType: "jsonp",
             data: {
                 "client_id": "1JXUG0BCBAIWUM0WDDAVQT3CY0PVH4FSXRC0LJL5OVKOIZZ2",
                 "client_secret": "5B4NN4OWKVET0Y0EJWEWKLWRPZISLSQKJZXXHCYOKQNTP442",
+                "VENUE_ID": marker.fourId,
                 "limit": 1,
-                "query": marker.name,
-                "ll": marker.position,
                 "v": '20170704',
                 "m":'foursquare'
             }
-        }).done(function(data) {
-            $.ajax({
-                url: "https://api.foursquare.com/v2/venues/"+data.response.venues[0].id+"/photos",
-                method: "get",
-                dataType: "jsonp",
-                data: {
-                    "client_id": "1JXUG0BCBAIWUM0WDDAVQT3CY0PVH4FSXRC0LJL5OVKOIZZ2",
-                    "client_secret": "5B4NN4OWKVET0Y0EJWEWKLWRPZISLSQKJZXXHCYOKQNTP442",
-                    "VENUE_ID": data.response.venues[0].id,
-                    "limit": 1,
-                    "v": '20170704',
-                    "m":'foursquare'
-                }
-            }).done(function(photos) {
-                var photo = photos.response.photos.items[0];
-                var image = photo.prefix+'200x80'+photo.suffix;
-                marker.marker.setAnimation(google.maps.Animation.BOUNCE);
-                setTimeout(function(){ marker.marker.setAnimation(null); }, 750);
-                infoWindow.setContent(createInfobox(marker.name, marker.address, image));
-                infoWindow.open(map, marker.marker);
-            });
+        }).done(function(photos) {
+            var photo = photos.response.photos.items[0];
+            var image = photo.prefix+'200x80'+photo.suffix;
+            marker.marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function(){ marker.marker.setAnimation(null); }, 750);
+            infoWindow.setContent(createInfobox(marker.name, marker.address, image));
+            infoWindow.open(map, marker.marker);
         });
     };
 }

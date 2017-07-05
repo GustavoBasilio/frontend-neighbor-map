@@ -1,7 +1,9 @@
 //Global variables
 var map,
     places,
-    infoWindow;
+    infoWindow,
+    foursquare_id = "HVLDCAFXB5Q0B3AFXXNLNDVFM2BXXXIY3A0HBQHC5YJDI1MO",
+    foursquare_secret = "GSMGNCEZ2IZY0QOSA4OBIXN1ZFVETKP502DJJ042Z0OKQLA5";
 
 //Location Class
 function Location(lat, lng) {
@@ -27,6 +29,15 @@ function MapViewModel() {
     self.menuStatus = ko.observable(false);
     self.menuCompute = ko.computed(function() {
         return self.menuStatus() ? "menu-open" : "";
+    });
+    //Tooltip
+    self.tooltip = ko.observable({
+        message: "",
+        status: 0,
+        class: ""
+    });
+    self.tooltipClass = ko.computed(function() {
+        return self.tooltip().status ? "tooltip-show" : "tooltip-hidden";
     });
     //Filter the comments
     self.resultsListFilter = ko.computed(function () {
@@ -138,8 +149,8 @@ function MapViewModel() {
                     method: "get",
                     dataType: "jsonp",
                     data: {
-                        "client_id": "1JXUG0BCBAIWUM0WDDAVQT3CY0PVH4FSXRC0LJL5OVKOIZZ2",
-                        "client_secret": "5B4NN4OWKVET0Y0EJWEWKLWRPZISLSQKJZXXHCYOKQNTP442",
+                        "client_id": foursquare_id,
+                        "client_secret": foursquare_secret,
                         "limit": 1,
                         "query": place.name,
                         "ll": position,
@@ -147,28 +158,40 @@ function MapViewModel() {
                         "m":'foursquare'
                     }
                 }).done(function(data) {
-                    if(data.response.venues.length > 0) {
-                        self.markers.push({
-                            marker: new google.maps.Marker({
-                                position: new Location(place.geometry.location.lat(),place.geometry.location.lng()).position,
-                                map: map,
-                                title: place.name,
-                                animation: google.maps.Animation.DROP,
-                                icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-                            }),
-                            position: position,
-                            name: place.name,
-                            address: place.vicinity,
-                            fourId: data.response.venues[0].id
+                    if(data.response.venues){
+                        if(data.response.venues.length > 0) {
+                            self.markers.push({
+                                marker: new google.maps.Marker({
+                                    position: new Location(place.geometry.location.lat(),place.geometry.location.lng()).position,
+                                    map: map,
+                                    title: place.name,
+                                    animation: google.maps.Animation.DROP,
+                                    icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+                                }),
+                                position: position,
+                                name: place.name,
+                                address: place.vicinity,
+                                fourId: data.response.venues[0].id
+                            });
+                            var marker = $(self.markers).last()[0];
+                            marker.marker.addListener('click', function() {
+                                self.onpenInfoWIndow(marker);
+                            });
+                            self.resultsList(self.markers);
+                        }
+                    }else {
+                        self.tooltip({
+                            status: 1,
+                            message: "Fousquare: "+data.meta.errorDetail || "Error in Forsquare request",
+                            class: "error"
                         });
-                        var marker = $(self.markers).last()[0];
-                        marker.marker.addListener('click', function() {
-                            self.onpenInfoWIndow(marker);
-                        });
-                        self.resultsList(self.markers);
                     }
                 }).fail(function(){
-                    console.log("Error in getting venue ID in Foursquare API");
+                    self.tooltip({
+                        status: 1,
+                        message: "Error in getting venue ID in Foursquare API",
+                        class: "error"
+                    });
                 });
             });
         });
@@ -181,8 +204,8 @@ function MapViewModel() {
             method: "get",
             dataType: "jsonp",
             data: {
-                "client_id": "1JXUG0BCBAIWUM0WDDAVQT3CY0PVH4FSXRC0LJL5OVKOIZZ2",
-                "client_secret": "5B4NN4OWKVET0Y0EJWEWKLWRPZISLSQKJZXXHCYOKQNTP442",
+                "client_id": foursquare_id,
+                "client_secret": foursquare_secret,
                 "VENUE_ID": marker.fourId,
                 "limit": 1,
                 "v": '20170704',
@@ -201,7 +224,11 @@ function MapViewModel() {
             infoWindow.setContent(createInfobox(marker.name, marker.address, image));
             infoWindow.open(map, marker.marker);
         }).fail(function(){
-            console.log("Error in getting photos in Foursquare API");
+            self.tooltip({
+                status: 1,
+                message: "Error in getting photos in Foursquare API",
+                class: "error"
+            });
         });
     };
 }

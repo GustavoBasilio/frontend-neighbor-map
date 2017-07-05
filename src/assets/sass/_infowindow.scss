@@ -3,3 +3,28 @@
         float: left;
     }
 }
+
+.tooltip {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    will-change: opacity;
+    transition: opacity 0.3s linear;
+    margin: 15px 10px;
+    span {
+        background-color: #fff;
+        padding: 5px 10px;
+        &.error {
+            background-color: red;
+            color: #fff;
+        }
+    }
+    &.tooltip-show {
+        opacity: 1;
+    }
+    &.tooltip-hidden {
+        opacity: 0;
+    }
+
+}
